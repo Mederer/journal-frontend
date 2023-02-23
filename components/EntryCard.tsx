@@ -1,17 +1,36 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import useEntries from "@/hooks/useEntries";
+import { Entry } from "@/types";
+import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 interface EntryCardProps {
-  title: string;
-  body: string;
+  entry: Entry;
 }
 
-export default function EntryCard({ title, body }: EntryCardProps) {
+export default function EntryCard({ entry }: EntryCardProps) {
+  const { deleteEntry } = useEntries();
+  const router = useRouter();
+
+  const { id, title, body } = entry;
+
+  const handleDelete = () => {
+    deleteEntry(id);
+  }
+
+  const handleView = () => {
+    router.push(`/entries/${id}`)
+  }
+
   return (
     <Card>
       <CardContent>
-        <Typography textAlign="center">{title}</Typography>
+        <Typography variant="h6" textAlign="center">{title}</Typography>
         <Typography>{body}</Typography>
       </CardContent>
+      <CardActions>
+        <Button onClick={handleView}>View</Button>
+        <Button color="error" onClick={handleDelete}>Delete</Button>
+      </CardActions>
     </Card>
   )
 }

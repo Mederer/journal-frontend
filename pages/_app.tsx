@@ -4,13 +4,26 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { CssBaseline } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { SWRConfig } from 'swr';
 import type { AppProps } from 'next/app'
 import Head from 'next/head';
 import UserContextProvider from '@/context/userContext';
 
 export default function App({ Component, pageProps }: AppProps) {
+
+  const theme = createTheme({
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#512da8',
+      },
+      secondary: {
+        main: '#f50057',
+      },
+    },
+  })
+
   return (
     <>
       <Head>
@@ -20,10 +33,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <CssBaseline />
       <SWRConfig>
         <UserContextProvider>
-          <UIShell>
-            <Component {...pageProps} />
-          </UIShell>
+          <ThemeProvider theme={theme}>
+            <UIShell>
+              <Component {...pageProps} />
+            </UIShell>
+          </ThemeProvider>
         </UserContextProvider>
+
       </SWRConfig>
     </>
   )

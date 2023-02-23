@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText, Stack, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Paper from "@mui/material/Paper";
 import MessageIcon from '@mui/icons-material/Message';
+import AddIcon from '@mui/icons-material/Add';
 
 interface MenuProps {
   toggleDrawer: () => void
@@ -22,7 +23,11 @@ export default function UIShell({ children }: any) {
   const { user, logout } = useUser();
   const router = useRouter();
 
-  console.log(router.pathname)
+  const isSmallScreen = useMediaQuery("(max-width:700px)");
+  console.log(isSmallScreen)
+  const theme = useTheme();
+
+  const drawerWidth = 240;
 
   const toggleDrawer = () => {
     setDrawerOpen((open) => !open)
@@ -37,22 +42,33 @@ export default function UIShell({ children }: any) {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" sx={{ marginRight: "2rem" }} onClick={toggleDrawer}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Journal</Typography>
-          {user && <Typography>{`Welcome ${user.firstname} ${user.lastname}`}</Typography>}
-          {authButtons}
-        </Toolbar>
-      </AppBar>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
-        {user ? <LoggedInMenu toggleDrawer={toggleDrawer} /> : <LoggedOutMenu toggleDrawer={toggleDrawer} />}
-      </Drawer>
-      <Paper sx={{ margin: "1rem", padding: "1rem" }}>
-        {children}
-      </Paper>
+      <Box sx={{ display: "flex" }}>
+        <AppBar position="fixed" sx={{ width: (isSmallScreen ? "100%" : `calc(100% - ${drawerWidth}px)`) }}>
+          <Toolbar>
+            <IconButton size="large" edge="start" color="inherit" sx={{ marginRight: "2rem", display: isSmallScreen ? "inherit" : "none" }} onClick={toggleDrawer}>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>Journal</Typography>
+            {user && <Typography>{`Welcome ${user.firstname} ${user.lastname}`}</Typography>}
+            {authButtons}
+          </Toolbar>
+        </AppBar>
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer} variant={isSmallScreen ? "temporary" : "permanent"} sx={{
+          width: isSmallScreen ? "0px" : drawerWidth,
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth
+          }
+        }}>
+          {user ? <LoggedInMenu toggleDrawer={toggleDrawer} /> : <LoggedOutMenu toggleDrawer={toggleDrawer} />}
+        </Drawer>
+        <Box component="main" flexGrow={1}>
+          <Toolbar />
+          <Paper sx={{ margin: "1rem", padding: "1rem" }}>
+            {children}
+          </Paper>
+        </Box>
+      </Box>
     </>
   )
 }
@@ -75,15 +91,23 @@ function LoggedInMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={() => handleNavigate("/")}>
           <ListItemIcon>
-            <DashboardIcon />
+            <DashboardIcon color="primary" />
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </ListItemButton>
       </ListItem>
       <ListItem>
+        <ListItemButton onClick={() => handleNavigate("/entries/new-entry")}>
+          <ListItemIcon>
+            <AddIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText>New Entry</ListItemText>
+        </ListItemButton>
+      </ListItem>
+      <ListItem>
         <ListItemButton onClick={() => handleNavigate("/entries")}>
           <ListItemIcon>
-            <MessageIcon />
+            <MessageIcon color="primary" />
           </ListItemIcon>
           <ListItemText>Entries</ListItemText>
         </ListItemButton>
@@ -92,7 +116,7 @@ function LoggedInMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={logoutHandler}>
           <ListItemIcon>
-            <LogoutIcon />
+            <LogoutIcon color="error" />
           </ListItemIcon>
           <ListItemText>Logout</ListItemText>
         </ListItemButton>
@@ -114,7 +138,7 @@ function LoggedOutMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={() => handleNavigate("/login")}>
           <ListItemIcon>
-            <LoginIcon />
+            <LoginIcon color="primary" />
           </ListItemIcon>
           <ListItemText>Login</ListItemText>
         </ListItemButton>

@@ -10,13 +10,30 @@ const fetcher = ([url, token]: [url: string, token: string]) =>
     },
   }).then((res) => res.json().then((resJson) => resJson));
 
-export default function useEntries(): { entries: Entry[]; error: any } {
+export default function useEntries(): {
+  entries: Entry[];
+  error: any;
+  deleteEntry: (id: number) => void;
+} {
   const token = getToken();
 
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     ["http://localhost:5000/entry", token],
     fetcher
   );
 
-  return { entries: data?.entries, error };
+  const deleteEntry = async (id: number) => {
+    const res = await fetch(`http://localhost:5000/entry/${id}`, {
+      method: "delete",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      console.log("Entry deleted");
+      mutate();
+    }
+  };
+
+  return { entries: data?.entries, error, deleteEntry };
 }

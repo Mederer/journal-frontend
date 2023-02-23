@@ -2,6 +2,6 @@ import { Typography } from "@mui/material";
 
 export default function DashboardScreen() {
   return (
-    <Typography>Welcome to your Dashboard</Typography>
+    <Typography variant="h5">Dashboard</Typography>
   )
 }

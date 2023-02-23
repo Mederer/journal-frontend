@@ -1,6 +1,6 @@
 import useUser from "@/hooks/useUser";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid2 from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -19,14 +19,14 @@ export default function LoginPage() {
     <>
       <Stack direction="column" alignItems="flex-start" spacing={2}>
         <Typography variant="h5">Login</Typography>
-        <Grid spacing={2} container>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+        <Grid2 spacing={2} container>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="Email" value={email} onChange={e => setEmail(e.target.value)} fullWidth />
-          </Grid>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+          </Grid2>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="Password" value={password} onChange={e => setPassword(e.target.value)} fullWidth />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" color="secondary" onClick={() => router.push("/")}>Back</Button>
           <Button variant="contained" onClick={loginHandler}>Login</Button>

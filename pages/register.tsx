@@ -1,7 +1,7 @@
 import useUser from "@/hooks/useUser";
 import { ValidationError } from "@/types";
 import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"
+import Grid2 from "@mui/material/Unstable_Grid2"
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { z } from "zod"
@@ -25,13 +25,13 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<ValidationError[]>([])
 
   const registerHandler = () => {
-    validateInput()
-    if (errors.length === 0) {
+    if (validateInput()) {
       register(firstname, lastname, email, password)
     }
   }
 
   const validateInput = () => {
+    const errors: ValidationError[] = []
     try {
       userSchema.parse({
         firstname,
@@ -39,18 +39,17 @@ export default function RegisterPage() {
         email,
         password
       })
-      setErrors([])
     } catch (error) {
-      const errors: ValidationError[] = []
       console.log(error)
       for (let issue of (error as ZodError).issues) {
         errors.push({
           field: issue.path[0] as string,
           message: issue.message
         })
-        setErrors(e => errors)
       }
     }
+    setErrors(errors)
+    return errors.length === 0;
   }
 
   const hasError = (field: string) => {
@@ -74,20 +73,20 @@ export default function RegisterPage() {
             ))}
           </Stack>
         </Box>
-        <Grid spacing={2} container>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+        <Grid2 spacing={2} container>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="First Name" value={firstname} onChange={e => setFirstname(e.target.value)} error={hasError("firstname") ? true : false} fullWidth />
-          </Grid>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+          </Grid2>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="Last Name" value={lastname} onChange={e => setLastname(e.target.value)} error={hasError("lastname") ? true : false} fullWidth />
-          </Grid>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+          </Grid2>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="Email" value={email} onChange={e => setEmail(e.target.value)} error={hasError("email") ? true : false} fullWidth />
-          </Grid>
-          <Grid xs={12} sm={6} md={6} lg={6}>
+          </Grid2>
+          <Grid2 xs={12} sm={6} md={6} lg={6}>
             <TextField label="Password" value={password} onChange={e => setPassword(e.target.value)} error={hasError("password") ? true : false} fullWidth />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" color="secondary" onClick={() => router.push("/")}>Back</Button>
           <Button variant="contained" onClick={registerHandler}>Register</Button>

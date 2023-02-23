@@ -1,11 +1,13 @@
-import EntryCard from "@/components/EntryCard";
+import EntryList from "@/components/EntryList";
 import UnauthorizedScreen from "@/components/screens/UnauthorizedScreen";
 import useEntries from "@/hooks/useEntries";
 import useUser from "@/hooks/useUser";
-import { Skeleton, Typography } from "@mui/material";
+import { Button, Skeleton, Typography } from "@mui/material";
 import { Stack } from "@mui/material";
+import { useRouter } from "next/router";
 
 export default function EntriesPage() {
+  const router = useRouter();
   const { user } = useUser();
   const { entries, error } = useEntries();
 
@@ -21,13 +23,17 @@ export default function EntriesPage() {
     )
   }
 
+  const newEntryHandler = () => {
+    router.push("/entries/new-entry");
+  }
+
   return (
-    <Stack>
-      <Typography> Entries</ Typography>
-      {entries.length === 0 && <Typography>You have no entries! Make one to get started</Typography>}
-      {entries.map(entry => (
-        <EntryCard key={entry.id} title={entry.title} body={entry.body} />
-      ))}
+    <Stack spacing={2}>
+      <Stack justifyContent="space-between" direction="row">
+        <Typography variant="h5">Entries</Typography>
+        <Button variant="contained" onClick={newEntryHandler}>New</Button>
+      </Stack>
+      <EntryList entries={entries} />
     </Stack>
   )
 }
