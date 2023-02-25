@@ -1,3 +1,4 @@
+import { getErrors } from "@/helpers/errorHelper";
 import useUser from "@/hooks/useUser";
 import { ValidationError } from "@/types";
 import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material";
@@ -5,7 +6,7 @@ import Grid2 from "@mui/material/Unstable_Grid2"
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { z } from "zod"
-import { ZodError } from "zod/lib";
+import { set, ZodError } from "zod/lib";
 
 const userSchema = z.object({
   firstname: z.string().min(2, { message: "Firstname must be at least 2 characters" }),
@@ -25,32 +26,35 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<ValidationError[]>([])
 
   const registerHandler = () => {
-    if (validateInput()) {
+    const errors = getErrors(userSchema, { firstname, lastname, password });
+    console.log(errors)
+    if (errors.length === 0) {
       register(firstname, lastname, email, password)
+    } else {
+      setErrors(errors)
     }
   }
 
-  const validateInput = () => {
-    const errors: ValidationError[] = []
-    try {
-      userSchema.parse({
-        firstname,
-        lastname,
-        email,
-        password
-      })
-    } catch (error) {
-      console.log(error)
-      for (let issue of (error as ZodError).issues) {
-        errors.push({
-          field: issue.path[0] as string,
-          message: issue.message
-        })
-      }
-    }
-    setErrors(errors)
-    return errors.length === 0;
-  }
+  // const getErrors = () => {
+  //   const errors: ValidationError[] = []
+  //   try {
+  //     userSchema.parse({
+  //       firstname,
+  //       lastname,
+  //       email,
+  //       password
+  //     })
+  //   } catch (error) {
+  //     console.log(error)
+  //     for (let issue of (error as ZodError).issues) {
+  //       errors.push({
+  //         field: issue.path[0] as string,
+  //         message: issue.message
+  //       })
+  //     }
+  //   }
+  //   return errors
+  // }
 
   const hasError = (field: string) => {
     for (let error of errors) {

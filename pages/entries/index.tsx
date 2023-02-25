@@ -13,7 +13,8 @@ export default function EntriesPage() {
 
   if (!user) {
     return (
-      <UnauthorizedScreen />
+      <>
+      </>
     )
   }
 

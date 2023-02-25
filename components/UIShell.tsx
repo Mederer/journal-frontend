@@ -20,12 +20,10 @@ interface MenuProps {
 
 export default function UIShell({ children }: any) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { user, logout } = useUser();
+  const { user } = useUser();
   const router = useRouter();
 
   const isSmallScreen = useMediaQuery("(max-width:700px)");
-  console.log(isSmallScreen)
-  const theme = useTheme();
 
   const drawerWidth = 240;
 
@@ -53,18 +51,19 @@ export default function UIShell({ children }: any) {
             {authButtons}
           </Toolbar>
         </AppBar>
-        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer} variant={isSmallScreen ? "temporary" : "permanent"} sx={{
-          width: isSmallScreen ? "0px" : drawerWidth,
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth
-          }
-        }}>
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer} variant={isSmallScreen ? "temporary" : "permanent"}
+          sx={{
+            width: isSmallScreen ? "0px" : drawerWidth,
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth
+            }
+          }}>
           {user ? <LoggedInMenu toggleDrawer={toggleDrawer} /> : <LoggedOutMenu toggleDrawer={toggleDrawer} />}
         </Drawer>
         <Box component="main" flexGrow={1}>
           <Toolbar />
-          <Paper sx={{ margin: "1rem", padding: "1rem" }}>
+          <Paper elevation={4} sx={{ margin: "1rem", padding: "1rem" }}>
             {children}
           </Paper>
         </Box>
@@ -72,6 +71,7 @@ export default function UIShell({ children }: any) {
     </>
   )
 }
+
 function LoggedInMenu({ toggleDrawer }: MenuProps) {
   const { logout } = useUser();
   const router = useRouter();
@@ -91,7 +91,7 @@ function LoggedInMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={() => handleNavigate("/")}>
           <ListItemIcon>
-            <DashboardIcon color="primary" />
+            <DashboardIcon color={router.pathname === "/" ? "secondary" : "primary"} />
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </ListItemButton>
@@ -99,7 +99,7 @@ function LoggedInMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={() => handleNavigate("/entries/new-entry")}>
           <ListItemIcon>
-            <AddIcon color="primary" />
+            <AddIcon color={router.pathname === "/entries/new-entry" ? "secondary" : "primary"} />
           </ListItemIcon>
           <ListItemText>New Entry</ListItemText>
         </ListItemButton>
@@ -107,7 +107,7 @@ function LoggedInMenu({ toggleDrawer }: MenuProps) {
       <ListItem>
         <ListItemButton onClick={() => handleNavigate("/entries")}>
           <ListItemIcon>
-            <MessageIcon color="primary" />
+            <MessageIcon color={router.pathname === "/entries" ? "secondary" : "primary"} />
           </ListItemIcon>
           <ListItemText>Entries</ListItemText>
         </ListItemButton>

@@ -31,7 +31,6 @@ export default function LoginPage() {
           <Button variant="contained" color="secondary" onClick={() => router.push("/")}>Back</Button>
           <Button variant="contained" onClick={loginHandler}>Login</Button>
         </Stack>
-
       </Stack>
     </>
   )

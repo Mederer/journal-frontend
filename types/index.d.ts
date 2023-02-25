@@ -11,6 +11,8 @@ export interface Entry {
   body: string;
 }
 
+export type NewEntry = Omit<Entry, "id">;
+
 export interface UserContextType {
   user: User?;
   setUser: Dispatch<SetStateAction<User | null>>;
